@@ -5,7 +5,7 @@ SMTP_PORT: 587
 USERNAME: you@gmail.com
 PASSWORD: "you're-password"
 
-TIMEZONE: 'US/Pacific'
+TIMEZONE: 'Europe/Dublin'
 
 PARTICIPANTS:
   - Chad <chad@somewhere.net>
