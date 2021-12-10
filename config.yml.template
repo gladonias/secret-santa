@@ -2,8 +2,8 @@
 # gmail
 SMTP_SERVER: smtp.gmail.com
 SMTP_PORT: 587
-USERNAME: you@gmail.com
-PASSWORD: "you're-password"
+USERNAME: your_email@mail.com
+PASSWORD: "your_password"
 
 TIMEZONE: 'Europe/Dublin'
 
