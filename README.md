@@ -1,10 +1,9 @@
 Intro
 =====
 
-**secret-santa** can help you manage a list of secret santa participants by
-randomly assigning pairings and sending emails. It can avoid pairing 
-couples to their significant other, and allows custom email messages to be 
-specified.
+**secret-santa** can help you manage a list of secret santa participants by randomly assigning pairings and sending emails.
+
+It can avoid pairing couples to their significant other, allows the addition of each participant suggestions for gifts and custom email messages to be specified.
 
 Dependencies
 ------------
@@ -28,16 +27,16 @@ Here is the example configuration unchanged:
     # gmail
     SMTP_SERVER: smtp.gmail.com
     SMTP_PORT: 587
-    USERNAME: you@gmail.com
-    PASSWORD: "you're-password"
+    USERNAME: your_email@mail.com
+    PASSWORD: "your_password"
 
-    TIMEZONE: 'US/Pacific'
+    TIMEZONE: 'Europe/Dublin'
 
     PARTICIPANTS:
-      - Chad <chad@somewhere.net>
-      - Jen <jen@gmail.net>
-      - Bill <Bill@somedomain.net>
-      - Sharon <Sharon@hi.org>
+      - Chad chad@somewhere.net Chad's suggestions
+      - Jen jen@gmail.net Jen's suggestions
+      - Bill Bill@somedomain.net Bill's suggestions
+      - Sharon Sharon@hi.org Sharon's suggestions
 
     # Warning -- if you mess this up you could get an infinite loop
     DONT-PAIR:
@@ -53,21 +52,20 @@ Here is the example configuration unchanged:
     SUBJECT: Your secret santa recipient is {santee}
     MESSAGE: 
       Dear {santa},
+  
+      This year you are {santee}'s Secret Santa. Ho Ho Ho!
 
-      This year you are {santee}'s Secret Santa!. Ho Ho Ho!
+      Don't forget that the maximum spending limit is EUR 25, and that {santee} left below a few suggestions to help you pick the perfect Christmas present.
 
-      The maximum spending limit is 50.00
-
-
-      This message was automagically generated from a computer. 
-
-      Nothing could possibly go wrong...
-
-      http://github.com/underbluewaters/secret-santa
+      {gifts_suggestions}
+  
+      This message was automagically generated from a computer. Merry Christmas! 
+  
+      The algorithm that made this all possible is available at https://github.com/gladonias/secret-santa  
 
 Once configured, call secret-santa:
 
-    python secret_santa.py
+    python3 secret_santa.py
 
 Calling secret-santa without arguments will output a test pairing of 
 participants.
@@ -82,8 +80,8 @@ participants.
         To send out emails with new pairings,
         call with the --send argument:
 
-            $ python secret_santa.py --send
+            $ python3 secret_santa.py --send
 
 To send the emails, call using the `--send` argument
 
-    python secret_santa.py --send
+    python3 secret_santa.py --send
