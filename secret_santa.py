@@ -68,7 +68,7 @@ def parse_yaml(yaml_path=CONFIG_PATH):
 def choose_receiver(giver, receivers):
     choice = random.choice(receivers)
     if choice.name in giver.invalid_matches or giver.name == choice.name:
-        if len(receivers) is 1:
+        if len(receivers) == 1:
             raise Exception('Only one receiver left, try again')
         return choose_receiver(giver, receivers)
     else:
