@@ -55,34 +55,34 @@ class Person:
         return "%s <%s>" % (self.name, self.email)
 
 class Pair:
-    def __init__(self, giver, reciever):
+    def __init__(self, giver, receiver):
         self.giver = giver
-        self.reciever = reciever
+        self.receiver = receiver
     
     def __str__(self):
-        return "%s ---> %s" % (self.giver.name, self.reciever.name)
+        return "%s ---> %s" % (self.giver.name, self.receiver.name)
 
 def parse_yaml(yaml_path=CONFIG_PATH):
     return yaml.load(open(yaml_path))    
 
-def choose_reciever(giver, recievers):
-    choice = random.choice(recievers)
+def choose_receiver(giver, receivers):
+    choice = random.choice(receivers)
     if choice.name in giver.invalid_matches or giver.name == choice.name:
-        if len(recievers) is 1:
-            raise Exception('Only one reciever left, try again')
-        return choose_reciever(giver, recievers)
+        if len(receivers) is 1:
+            raise Exception('Only one receiver left, try again')
+        return choose_receiver(giver, receivers)
     else:
         return choice
 
 def create_pairs(g, r):
     givers = g[:]
-    recievers = r[:]
+    receivers = r[:]
     pairs = []
     for giver in givers:
         try:
-            reciever = choose_reciever(giver, recievers)
-            recievers.remove(reciever)
-            pairs.append(Pair(giver, reciever))
+            receiver = choose_receiver(giver, receivers)
+            receivers.remove(receiver)
+            pairs.append(Pair(giver, receiver))
         except:
             return create_pairs(g, r)
     return pairs
@@ -136,8 +136,8 @@ def main(argv=None):
             person = Person(name, email, invalid_matches)
             givers.append(person)
         
-        recievers = givers[:]
-        pairs = create_pairs(givers, recievers)
+        receivers = givers[:]
+        pairs = create_pairs(givers, receivers)
         if not send:
             print """
 Test pairings:
@@ -162,7 +162,7 @@ call with the --send argument:
             message_id = '<%s@%s>' % (str(time.time())+str(random.random()), socket.gethostname())
             frm = config['FROM']
             to = pair.giver.email
-            subject = config['SUBJECT'].format(santa=pair.giver.name, santee=pair.reciever.name)
+            subject = config['SUBJECT'].format(santa=pair.giver.name, santee=pair.receiver.name)
             body = (HEADER+config['MESSAGE']).format(
                 date=date, 
                 message_id=message_id, 
@@ -170,7 +170,7 @@ call with the --send argument:
                 to=to, 
                 subject=subject,
                 santa=pair.giver.name,
-                santee=pair.reciever.name,
+                santee=pair.receiver.name,
             )
             if send:
                 result = server.sendmail(frm, [to], body)
