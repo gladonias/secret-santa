@@ -52,7 +52,7 @@ class Person:
         self.invalid_matches = invalid_matches
     
     def __str__(self):
-        return "%s <%s>" % (self.name, self.email)
+        return "{} <{}>".format(self.name, self.email)
 
 class Pair:
     def __init__(self, giver, receiver):
@@ -159,7 +159,7 @@ call with the --send argument:
             zone = pytz.timezone(config['TIMEZONE'])
             now = zone.localize(datetime.datetime.now())
             date = now.strftime('%a, %d %b %Y %T %Z') # Sun, 21 Dec 2008 06:25:23 +0000
-            message_id = '<%s@%s>' % (str(time.time())+str(random.random()), socket.gethostname())
+            message_id = '<{}@{}>'.format(str(time.time())+str(random.random()), socket.gethostname())
             frm = config['FROM']
             to = pair.giver.email
             subject = config['SUBJECT'].format(santa=pair.giver.name, santee=pair.receiver.name)
