@@ -63,7 +63,7 @@ class Pair:
         return "%s ---> %s" % (self.giver.name, self.receiver.name)
 
 def parse_yaml(yaml_path=CONFIG_PATH):
-    return yaml.load(open(yaml_path))    
+    return yaml.load(open(yaml_path), yaml.Loader)    
 
 def choose_receiver(giver, receivers):
     choice = random.choice(receivers)
