@@ -46,10 +46,11 @@ Subject: {subject}
 CONFIG_PATH = os.path.join(os.path.dirname(__file__), 'config.yml')
 
 class Person:
-    def __init__(self, name, email, invalid_matches):
+    def __init__(self, name, email, invalid_matches, wishlist):
         self.name = name
         self.email = email
         self.invalid_matches = invalid_matches
+        self.wishlist = wishlist
     
     def __str__(self):
         return "{} <{}>".format(self.name, self.email)
@@ -123,7 +124,7 @@ def main(argv=None):
         
         givers = []
         for person in participants:
-            name, email = re.match(r'([^<]*)<([^>]*)>', person).groups()
+            name, email, wishlist = person.split(" ", maxsplit=2)
             name = name.strip()
             invalid_matches = []
             for pair in dont_pair:
@@ -133,7 +134,7 @@ def main(argv=None):
                     for member in names:
                         if name != member:
                             invalid_matches.append(member)
-            person = Person(name, email, invalid_matches)
+            person = Person(name, email, invalid_matches, wishlist)
             givers.append(person)
         
         receivers = givers[:]
@@ -171,6 +172,7 @@ call with the --send argument:
                 subject=subject,
                 santa=pair.giver.name,
                 santee=pair.receiver.name,
+                gifts_suggestions=pair.receiver.wishlist,
             )
             if send:
                 result = server.sendmail(frm, [to], body.encode('utf-8'))
@@ -186,4 +188,4 @@ call with the --send argument:
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    main()
