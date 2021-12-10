@@ -8,10 +8,10 @@ PASSWORD: "your_password"
 TIMEZONE: 'Europe/Dublin'
 
 PARTICIPANTS:
-  - Chad <chad@somewhere.net>
-  - Jen <jen@gmail.net>
-  - Bill <Bill@somedomain.net>
-  - Sharon <Sharon@hi.org>
+  - Chad chad@somewhere.net This is Chad's wishlist
+  - Jen jen@gmail.net This is Jen's wishlist
+  - Bill Bill@somedomain.net This is Bill's wishlist
+  - Sharon Sharon@hi.org This is Sharon's wishlist
 
 
 # Warning -- if you mess this up you could get an infinite loop
@@ -25,18 +25,16 @@ FROM: You <you@gmail.net>
 
 # Both SUBJECT and MESSAGE can include variable substitution for the 
 # "santa" and "santee"
-SUBJECT: Your secret santa recipient is {santee}
+SUBJECT: Here's your secret santa recipient
 MESSAGE: 
   Dear {santa},
   
-  This year you are {santee}'s Secret Santa!. Ho Ho Ho!
+  This year you are {santee}'s Secret Santa. Ho Ho Ho!
+
+  Don't forget that the maximum spending limit is EUR 25, and that {santee} left below a few suggestions to help you pick the perfect Christmas present.
+
+  {gifts_suggestions}
   
-  The maximum spending limit is 50.00
+  This message was automagically generated from a computer. Merry Christmas! 
   
-  
-  This message was automagically generated from a computer. 
-  
-  Nothing could possibly go wrong...
-  
-  http://github.com/underbluewaters/secret-santa
-  
+  The algorithm that made this all possible is available at https://github.com/gladonias/secret-santa  
