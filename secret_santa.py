@@ -99,7 +99,7 @@ def main(argv=None):
     try:
         try:
             opts, args = getopt.getopt(argv[1:], "shc", ["send", "help"])
-        except getopt.error, msg:
+        except getopt.error as msg:
             raise Usage(msg)
     
         # option processing
@@ -114,7 +114,7 @@ def main(argv=None):
         for key in REQRD:
             if key not in config.keys():
                 raise Exception(
-                    'Required parameter %s not in yaml config file!' % (key,))
+                    'Required parameter {} not in yaml config file!'.format(key,))
 
         participants = config['PARTICIPANTS']
         dont_pair = config['DONT-PAIR']
@@ -139,17 +139,17 @@ def main(argv=None):
         receivers = givers[:]
         pairs = create_pairs(givers, receivers)
         if not send:
-            print """
+            print("""
 Test pairings:
                 
-%s
+{}
                 
 To send out emails with new pairings,
 call with the --send argument:
 
     $ python secret_santa.py --send
             
-            """ % ("\n".join([str(p) for p in pairs]))
+            """.format("\n".join([str(p) for p in pairs])))
         
         if send:
             server = smtplib.SMTP(config['SMTP_SERVER'], config['SMTP_PORT'])
@@ -174,12 +174,12 @@ call with the --send argument:
             )
             if send:
                 result = server.sendmail(frm, [to], body)
-                print "Emailed %s <%s>" % (pair.giver.name, to)
+                print("Emailed {} <{}>" .format(pair.giver.name, to))
 
         if send:
             server.quit()
         
-    except Usage, err:
+    except Usage as err:
         print >> sys.stderr, sys.argv[0].split("/")[-1] + ": " + str(err.msg)
         print >> sys.stderr, "\t for help use --help"
         return 2
