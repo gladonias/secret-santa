@@ -61,7 +61,7 @@ class Pair:
         self.receiver = receiver
     
     def __str__(self):
-        return "%s ---> %s" % (self.giver.name, self.receiver.name)
+        return "{} ---> {}".format(self.giver.name, self.receiver.name)
 
 def parse_yaml(yaml_path=CONFIG_PATH):
     return yaml.load(open(yaml_path), yaml.Loader)    
