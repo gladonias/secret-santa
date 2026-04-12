@@ -68,7 +68,7 @@ Here is the example configuration unchanged:
 
       This message was automagically generated from a computer. Merry Christmas!
 
-      The algorithm that made this all possible is available at https://github.com/gladonias/secret-santa
+      The algorithm that made this all possible is available at https://codeberg.org/gadonias/secret-santa
 
 ### Password configuration
 
