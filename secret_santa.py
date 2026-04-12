@@ -1,5 +1,4 @@
 import yaml
-# sudo pip install pyyaml
 import re
 import random
 import smtplib
@@ -22,17 +21,18 @@ For more information, see README.
 '''
 
 REQRD = (
-    'SMTP_SERVER', 
-    'SMTP_PORT', 
-    'USERNAME', 
-    'PASSWORD', 
-    'TIMEZONE', 
-    'PARTICIPANTS', 
-    'DONT-PAIR', 
-    'FROM', 
-    'SUBJECT', 
+    'SMTP_SERVER',
+    'SMTP_PORT',
+    'USERNAME',
+    'TIMEZONE',
+    'PARTICIPANTS',
+    'DONT-PAIR',
+    'FROM',
+    'SUBJECT',
     'MESSAGE',
 )
+
+EMAIL_RE = re.compile(r'^[^@\s]+@[^@\s]+\.[^@\s]+$')
 
 HEADER = """Date: {date}
 Content-Type: text/plain; charset="utf-8"
@@ -119,9 +119,17 @@ def main(argv=None):
                 
         config = parse_yaml()
         for key in REQRD:
-            if key not in config.keys():
+            if key not in config:
                 raise Exception(
-                    'Required parameter {} not in yaml config file!'.format(key,))
+                    'Required parameter {} not in yaml config file!'.format(key))
+
+        # Support PASSWORD from environment variable or config
+        if 'PASSWORD' not in config:
+            config['PASSWORD'] = os.environ.get('SECRET_SANTA_PASSWORD')
+        if not config.get('PASSWORD'):
+            raise Exception(
+                'PASSWORD must be set in config.yml or via the '
+                'SECRET_SANTA_PASSWORD environment variable.')
 
         participants = config['PARTICIPANTS']
         dont_pair = config['DONT-PAIR']
@@ -130,8 +138,17 @@ def main(argv=None):
         
         givers = []
         for person in participants:
-            name, email, wishlist = person.split(" ", maxsplit=2)
-            name = name.strip()
+            parts = person.split(None, 2)
+            if len(parts) < 2:
+                raise Exception(
+                    'Invalid participant entry: "{}". '
+                    'Expected "Name email [wishlist]".'.format(person))
+            name = parts[0].strip()
+            email = parts[1].strip()
+            wishlist = parts[2].strip() if len(parts) > 2 else ''
+            if not EMAIL_RE.match(email):
+                raise Exception(
+                    'Invalid email address for {}: "{}"'.format(name, email))
             invalid_matches = []
             for pair in dont_pair:
                 names = [n.strip() for n in pair.split(',')]

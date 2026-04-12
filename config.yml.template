@@ -3,6 +3,7 @@
 SMTP_SERVER: smtp.gmail.com
 SMTP_PORT: 587
 USERNAME: your_email@mail.com
+# PASSWORD can be set here or via the SECRET_SANTA_PASSWORD environment variable
 PASSWORD: "your_password"
 
 TIMEZONE: 'Europe/Dublin'
