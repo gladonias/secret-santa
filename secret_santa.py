@@ -75,7 +75,13 @@ def choose_receiver(giver, receivers):
     else:
         return choice
 
-def create_pairs(g, r):
+MAX_ATTEMPTS = 1000
+
+def create_pairs(g, r, attempt=0):
+    if attempt >= MAX_ATTEMPTS:
+        raise Exception(
+            'Could not find valid pairings after {} attempts. '
+            'Check your DONT-PAIR constraints.'.format(MAX_ATTEMPTS))
     givers = g[:]
     receivers = r[:]
     pairs = []
@@ -85,7 +91,7 @@ def create_pairs(g, r):
             receivers.remove(receiver)
             pairs.append(Pair(giver, receiver))
         except Exception:
-            return create_pairs(g, r)
+            return create_pairs(g, r, attempt + 1)
     return pairs
 
 
@@ -156,30 +162,31 @@ call with the --send argument:
             server = smtplib.SMTP(config['SMTP_SERVER'], config['SMTP_PORT'])
             server.starttls()
             server.login(config['USERNAME'], config['PASSWORD'])
-        for pair in pairs:
-            zone = pytz.timezone(config['TIMEZONE'])
-            now = zone.localize(datetime.datetime.now())
-            date = now.strftime('%a, %d %b %Y %T %Z') # Sun, 21 Dec 2008 06:25:23 +0000
-            message_id = '<{}@{}>'.format(str(time.time())+str(random.random()), socket.gethostname())
-            frm = config['FROM']
-            to = pair.giver.email
-            subject = config['SUBJECT'].format(santa=pair.giver.name, santee=pair.receiver.name)
-            body = (HEADER+config['MESSAGE']).format(
-                date=date, 
-                message_id=message_id, 
-                frm=frm, 
-                to=to, 
-                subject=subject,
-                santa=pair.giver.name,
-                santee=pair.receiver.name,
-                gifts_suggestions=pair.receiver.wishlist,
-            )
+        try:
+            for pair in pairs:
+                zone = pytz.timezone(config['TIMEZONE'])
+                now = zone.localize(datetime.datetime.now())
+                date = now.strftime('%a, %d %b %Y %H:%M:%S %Z')
+                message_id = '<{}@{}>'.format(str(time.time())+str(random.random()), socket.gethostname())
+                frm = config['FROM']
+                to = pair.giver.email
+                subject = config['SUBJECT'].format(santa=pair.giver.name, santee=pair.receiver.name)
+                body = (HEADER+config['MESSAGE']).format(
+                    date=date,
+                    message_id=message_id,
+                    frm=frm,
+                    to=to,
+                    subject=subject,
+                    santa=pair.giver.name,
+                    santee=pair.receiver.name,
+                    gifts_suggestions=pair.receiver.wishlist,
+                )
+                if send:
+                    result = server.sendmail(frm, [to], body.encode('utf-8'))
+                    print("Emailed {} <{}>".format(pair.giver.name, to))
+        finally:
             if send:
-                result = server.sendmail(frm, [to], body.encode('utf-8'))
-                print("Emailed {} <{}>" .format(pair.giver.name, to))
-
-        if send:
-            server.quit()
+                server.quit()
         
     except Usage as err:
         print(sys.argv[0].split("/")[-1] + ": " + str(err.msg), file=sys.stderr)
