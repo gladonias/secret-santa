@@ -45,6 +45,10 @@ Subject: {subject}
 
 CONFIG_PATH = os.path.join(os.path.dirname(__file__), 'config.yml')
 
+def sanitize_header(value):
+    """Remove newlines to prevent SMTP header injection."""
+    return re.sub(r'[\r\n]', '', str(value))
+
 class Person:
     def __init__(self, name, email, invalid_matches, wishlist):
         self.name = name
@@ -185,9 +189,10 @@ call with the --send argument:
                 now = zone.localize(datetime.datetime.now())
                 date = now.strftime('%a, %d %b %Y %H:%M:%S %Z')
                 message_id = '<{}@{}>'.format(str(time.time())+str(random.random()), socket.gethostname())
-                frm = config['FROM']
-                to = pair.giver.email
-                subject = config['SUBJECT'].format(santa=pair.giver.name, santee=pair.receiver.name)
+                frm = sanitize_header(config['FROM'])
+                to = sanitize_header(pair.giver.email)
+                subject = sanitize_header(
+                    config['SUBJECT'].format(santa=pair.giver.name, santee=pair.receiver.name))
                 body = (HEADER+config['MESSAGE']).format(
                     date=date,
                     message_id=message_id,
