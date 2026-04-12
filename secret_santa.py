@@ -84,7 +84,7 @@ def create_pairs(g, r):
             receiver = choose_receiver(giver, receivers)
             receivers.remove(receiver)
             pairs.append(Pair(giver, receiver))
-        except:
+        except Exception:
             return create_pairs(g, r)
     return pairs
 
@@ -182,8 +182,8 @@ call with the --send argument:
             server.quit()
         
     except Usage as err:
-        print >> sys.stderr, sys.argv[0].split("/")[-1] + ": " + str(err.msg)
-        print >> sys.stderr, "\t for help use --help"
+        print(sys.argv[0].split("/")[-1] + ": " + str(err.msg), file=sys.stderr)
+        print("\t for help use --help", file=sys.stderr)
         return 2
 
 
