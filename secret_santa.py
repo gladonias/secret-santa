@@ -40,7 +40,7 @@ Message-Id: {message_id}
 From: {frm}
 To: {to}
 Subject: {subject}
-        
+
 """
 
 CONFIG_PATH = os.path.join(os.path.dirname(__file__), 'config.yml')
