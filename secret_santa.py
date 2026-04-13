@@ -108,7 +108,7 @@ def main(argv=None):
         argv = sys.argv
     try:
         try:
-            opts, args = getopt.getopt(argv[1:], "shc", ["send", "help"])
+            opts, args = getopt.getopt(argv[1:], "sh", ["send", "help"])
         except getopt.error as msg:
             raise Usage(msg)
     
