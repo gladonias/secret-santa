@@ -16,7 +16,6 @@ REQRD = (
     'USERNAME',
     'TIMEZONE',
     'PARTICIPANTS',
-    'DONT-PAIR',
     'FROM',
     'SUBJECT',
     'MESSAGE',
@@ -113,7 +112,7 @@ def main(argv=None):
                 'SECRET_SANTA_PASSWORD environment variable.')
 
         participants = config['PARTICIPANTS']
-        dont_pair = config['DONT-PAIR']
+        dont_pair = config.get('DONT-PAIR', [])
         if len(participants) < 2:
             raise Exception('Not enough participants specified.')
         
