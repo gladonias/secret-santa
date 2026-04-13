@@ -182,31 +182,33 @@ call with the --send argument:
             server = smtplib.SMTP(config['SMTP_SERVER'], config['SMTP_PORT'])
             server.starttls()
             server.login(config['USERNAME'], config['PASSWORD'])
-        try:
-            for pair in pairs:
-                zone = pytz.timezone(config['TIMEZONE'])
-                now = zone.localize(datetime.datetime.now())
-                date = now.strftime('%a, %d %b %Y %H:%M:%S %Z')
-                message_id = '<{}@{}>'.format(str(time.time())+str(random.random()), socket.gethostname())
-                frm = sanitize_header(config['FROM'])
-                to = sanitize_header(pair.giver.email)
-                subject = sanitize_header(
-                    config['SUBJECT'].format(santa=pair.giver.name, santee=pair.receiver.name))
-                body = (HEADER+config['MESSAGE']).format(
-                    date=date,
-                    message_id=message_id,
-                    frm=frm,
-                    to=to,
-                    subject=subject,
-                    santa=pair.giver.name,
-                    santee=pair.receiver.name,
-                    gifts_suggestions=pair.receiver.wishlist,
-                )
-                if send:
-                    result = server.sendmail(frm, [to], body.encode('utf-8'))
+            try:
+                for pair in pairs:
+                    zone = pytz.timezone(config['TIMEZONE'])
+                    now = zone.localize(datetime.datetime.now())
+                    date = now.strftime('%a, %d %b %Y %H:%M:%S %Z')
+                    message_id = '<{}@{}>'.format(
+                        str(time.time()) + str(random.random()),
+                        socket.gethostname())
+                    frm = sanitize_header(config['FROM'])
+                    to = sanitize_header(pair.giver.email)
+                    subject = sanitize_header(
+                        config['SUBJECT'].format(
+                            santa=pair.giver.name,
+                            santee=pair.receiver.name))
+                    body = (HEADER + config['MESSAGE']).format(
+                        date=date,
+                        message_id=message_id,
+                        frm=frm,
+                        to=to,
+                        subject=subject,
+                        santa=pair.giver.name,
+                        santee=pair.receiver.name,
+                        gifts_suggestions=pair.receiver.wishlist,
+                    )
+                    server.sendmail(frm, [to], body.encode('utf-8'))
                     print("Emailed {} <{}>".format(pair.giver.name, to))
-        finally:
-            if send:
+            finally:
                 server.quit()
         
     except Usage as err:
