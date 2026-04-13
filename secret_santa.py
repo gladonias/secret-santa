@@ -72,13 +72,11 @@ def parse_yaml(yaml_path=CONFIG_PATH):
         return yaml.load(f, yaml.Loader)
 
 def choose_receiver(giver, receivers):
-    choice = random.choice(receivers)
-    if choice.name in giver.invalid_matches or giver.name == choice.name:
-        if len(receivers) == 1:
-            raise Exception('Only one receiver left, try again')
-        return choose_receiver(giver, receivers)
-    else:
-        return choice
+    valid = [r for r in receivers
+             if r.name != giver.name and r.name not in giver.invalid_matches]
+    if not valid:
+        raise Exception('No valid receiver for {}'.format(giver.name))
+    return random.choice(valid)
 
 MAX_ATTEMPTS = 1000
 
