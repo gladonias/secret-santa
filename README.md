@@ -45,7 +45,7 @@ Here is the example configuration unchanged:
       - Bill Bill@somedomain.net Bill's suggestions
       - Sharon Sharon@hi.org Sharon's suggestions
 
-    # Warning -- if you mess this up you could get an infinite loop
+    # Optional -- omit if no pairing constraints are needed
     DONT-PAIR:
       - Chad, Jen    # Chad and Jen are married
       - Chad, Bill   # Chad and Bill are best friends
@@ -114,6 +114,18 @@ To send the emails, call using the `--send` argument:
 
 Changelog
 ---------
+
+### 0.3.0
+
+- Fix file handle leak in YAML config parsing
+- Fix trailing whitespace in email header/body separator
+- Replace recursive `choose_receiver()` with iterative filter approach
+- Fix `try/finally` scope — no longer risks `NameError` in dry-run mode
+- Remove unused `result` variable from `sendmail` call
+- Remove spurious `-c` flag from CLI options
+- Replace legacy `getopt` with `argparse` for better help and error output
+- Make `DONT-PAIR` config optional (defaults to no constraints)
+- Add `__pycache__/` and `*.pyc` to `.gitignore`
 
 ### 0.2.0
 
