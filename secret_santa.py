@@ -7,18 +7,8 @@ import pytz
 import time
 import socket
 import sys
-import getopt
+import argparse
 import os
-
-help_message = '''
-To use, fill out config.yml with your own participants. You can also specify 
-DONT-PAIR so that people don't get assigned their significant other.
-
-You'll also need to specify your mail server settings. An example is provided
-for routing mail through gmail.
-
-For more information, see README.
-'''
 
 REQRD = (
     'SMTP_SERVER',
@@ -98,28 +88,16 @@ def create_pairs(g, r, attempt=0):
     return pairs
 
 
-class Usage(Exception):
-    def __init__(self, msg):
-        self.msg = msg
-
-
 def main(argv=None):
-    if argv is None:
-        argv = sys.argv
+    parser = argparse.ArgumentParser(
+        description='Assign and email Secret Santa pairings.')
+    parser.add_argument(
+        '-s', '--send', action='store_true',
+        help='Send emails to participants (default: dry-run)')
+    args = parser.parse_args(argv)
+    send = args.send
+
     try:
-        try:
-            opts, args = getopt.getopt(argv[1:], "sh", ["send", "help"])
-        except getopt.error as msg:
-            raise Usage(msg)
-    
-        # option processing
-        send = False
-        for option, value in opts:
-            if option in ("-s", "--send"):
-                send = True
-            if option in ("-h", "--help"):
-                raise Usage(help_message)
-                
         config = parse_yaml()
         for key in REQRD:
             if key not in config:
@@ -211,10 +189,9 @@ call with the --send argument:
             finally:
                 server.quit()
         
-    except Usage as err:
-        print(sys.argv[0].split("/")[-1] + ": " + str(err.msg), file=sys.stderr)
-        print("\t for help use --help", file=sys.stderr)
-        return 2
+    except Exception as err:
+        print("Error: {}".format(err), file=sys.stderr)
+        return 1
 
 
 if __name__ == "__main__":
